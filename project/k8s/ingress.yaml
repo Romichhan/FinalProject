@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: project-service-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: sromey.finalproject.com
+      http:
+        paths:
+          - path: /project-service
+            pathType: Prefix
+            backend:
+              service:
+                name: project-service  # Must match Service.metadata.name
+                port:
+                  number: 8080
