@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: project-service  # Must match template.metadata.labels and Service selector
+  template:
+    metadata:
+      labels:
+        app: project-service  # Must match Deployment selector and Service selector
+    spec:
+      containers:
+        - name: project-service
+          image: project-service:1.0.1 # Your Docker image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080  # Must match server.port in Spring Boot
+          # Uncomment and use these env vars ONLY if you want to override application.properties at runtime
+          # env:
+          #   - name: SPRING_DATASOURCE_URL
+          #     value: jdbc:postgresql://postgres:5432/final
+          #   - name: SPRING_DATASOURCE_USERNAME
+          #     value: postgres
+          #   - name: SPRING_DATASOURCE_PASSWORD
+          #     value: myrank1208!
+          #   - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          #     value: http://eureka-server:8761/eureka
+          #   - name: SERVER_PORT
+          #     value: "8080"

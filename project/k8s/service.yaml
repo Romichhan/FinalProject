@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service  # DNS name for internal access
+spec:
+  selector:
+    app: project-service  # Must match Deployment template.metadata.labels
+  ports:
+    - port: 8080       # Port exposed internally
+      targetPort: 8080 # Matches containerPort in Deployment
+  type: ClusterIP      # Internal cluster access only
