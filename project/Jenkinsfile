@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "project-service"
-        IMAGE_TAG  = "1.0.${BUILD_NUMBER}"  // Incremental version based on Jenkins build number
+        IMAGE_TAG  = "1.0.${BUILD_NUMBER}"
     }
 
     stages {
@@ -16,23 +16,26 @@ pipeline {
 
         stage('Build JAR') {
             steps {
-                sh './mvnw clean package'
+                dir('project') {
+                    sh 'chmod +x mvnw'
+                    sh './mvnw clean package'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                dir('project') {
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh """
-                # Update the container image in the Deployment to the new version
-                kubectl set image deployment/project-service \
-                  project-service=${IMAGE_NAME}:${IMAGE_TAG} --record
-                """
+                dir('project') {
+                    sh "kubectl set image deployment/project-service project-service=${IMAGE_NAME}:${IMAGE_TAG}"
+                }
             }
         }
     }
